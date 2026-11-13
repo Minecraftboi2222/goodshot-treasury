@@ -48,7 +48,7 @@ export class TreasuryService{
     const balance=BigInt(await this.connection.getBalance(this.keypair.publicKey,'finalized'));
     if(balance<BigInt(work.liability)+this.gasReserve)throw fail('Treasury needs its separate SOL gas reserve topped up. Prize allocations are not spent on gas.');
     if(work.round){
-      const payouts=work.round.payouts.filter(p=>!p.paymentSignature),sum=payouts.reduce((n,p)=>n+BigInt(p.amount),0n);
+      const payouts=work.round.payouts.filter(p=>!p.paymentSignature&&!p.forfeited),sum=payouts.reduce((n,p)=>n+BigInt(p.amount),0n);
       if(sum>BigInt(work.round.amount)||payouts.length>3||new Set(payouts.map(p=>p.wallet)).size!==payouts.length)throw fail('Invalid round award; no payment signed.');
       const instructions=payouts.map(p=>SystemProgram.transfer({fromPubkey:this.keypair.publicKey,toPubkey:new PublicKey(p.wallet),lamports:BigInt(p.amount)}));instructions.push(new TransactionInstruction({programId:MEMO,keys:[],data:Buffer.from('goodshot:payout:'+work.round.id)}));
       const prepared=await this.signed(instructions,'payout',work.round.id),job=await this.api('prepare',{id:'payout:'+work.round.id,...prepared});return this.resume(job);

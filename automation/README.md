@@ -4,13 +4,13 @@ This is a continuously running Node service. The website hosts the durable trans
 
 ## Selected wallets and funding
 
-- Manual-donation destination (70%): `6JhLT2mZmF5NMGcRrSw26XoHFmdrFQmxTY9rVSCgnag5`
+- Donation allocation destination (70%): `6JhLT2mZmF5NMGcRrSw26XoHFmdrFQmxTY9rVSCgnag5`
 - Dedicated prize treasury and service signer (30%): `GKZCRudVWUWNbEN7uvY1CREJEoGc9onZmuNuzpU6X77p`
 - Token mint: awaiting launch.
 
 After launch, configure Pump creator distribution through Proxima: exactly these two wallets, 70% / 30%. These are fee recipients, not token holders. Pump sharing updates can revoke the admin permanently; inspect the exact addresses and percentages in your wallet before signing. This service never creates or changes that configuration. If the token uses a different route, cashback, or a non-SOL quote, it halts rather than inventing a funding source.
 
-The service checks the sharing configuration and triggers Pump distribution using the official SDK. SOL reaches each wallet on chain. Only confirmed distribution transfers for the configured mint credit the ledger. The donation figure means transferred to your manual-donation wallet, not donated to a charity. Each round reserves 10% of the remaining prize pool; the top three receive 50% / 30% / 20% automatically after an eligible round.
+The service checks the sharing configuration and triggers Pump distribution using the official SDK. SOL reaches each wallet on chain. Only confirmed distribution transfers for the configured mint credit the ledger. The donation figure means transferred to your donation allocation wallet, not donated to a charity. Each round reserves 10% of the remaining prize pool; the top three successful retrievers receive 50% / 30% / 20% after a funded qualifying round. Food, water and shelter deliveries count equally. No token balance is required to play or win. A round needs three distinct wallet participants; unfilled successful-retriever places return their shares to the pool.
 
 ## Hosting and secrets
 
@@ -49,3 +49,13 @@ Unexpected successful transactions requiring review remain recorded; their payou
 Verification uses mocked RPC data and generated test wallets; no mainnet funds have been claimed or paid. A small real claim and a small eligible end-to-end payout must still be verified after configuration. Larger fee sweeps may require `CLAIM_LOOKUP_TABLE`; the runner pauses with a setup message if a transaction cannot fit, rather than sending a partial distribution.
 
 The official SDK's transitive dependency audit currently reports upstream advisories. The container disables install scripts/native bigint bindings; the service does not parse TOML, expose JSON-RPC server parsers, or use UUID buffer-writing functions. These are containment measures, not an audit certification. Recheck dependencies and the live integration before enabling meaningful balances.
+
+## Remaining activation steps
+
+The production site currently has automation disabled, no launched TOKEN_MINT, no worker heartbeat and zero recorded claims/payouts. The planned mint returned no finalized mainnet account and the prize treasury had zero SOL at the latest check.
+
+1. Launch the token and confirm its actual mint.
+2. In Pump/Proxima, configure 70% of creator fees to the developer/donation allocation wallet and 30% to the dedicated treasury. The owner signs this on chain.
+3. Deploy the private goodshot-treasury repository as a Render Docker background worker. Set GOODSHOT_ORIGIN=https://playgoodshot.fun and SOLANA_RPC_URL=https://solana-rpc.publicnode.com. Configure TREASURY_SECRET_KEY directly in Render, using only the dedicated treasury keypair. Never paste it in chat.
+4. Fund a separate treasury gas cushion (for example 0.05 SOL; the runner requires its 0.02 SOL reserve above liabilities). The owner performs the funding transaction.
+5. Set the actual mint/mainnet configuration, verify the split and worker, then activate automation for a small monitored end-to-end claim and prize payment. Confirm finalized signatures before describing automatic payouts as working.
