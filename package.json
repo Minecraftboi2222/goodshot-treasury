@@ -1,0 +1,31 @@
+{
+  "name": "goodshot",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "db:generate": "drizzle-kit generate",
+    "treasury:worker": "node automation/runner.mjs"
+  },
+  "dependencies": {
+    "three": "^0.181.0",
+    "@noble/curves": "^1.9.7",
+    "bs58": "^6.0.0",
+    "@solana/web3.js": "1.98.4",
+    "@solana/spl-token": "0.4.14",
+    "@pump-fun/pump-sdk": "4.3.1",
+    "@pump-fun/pump-swap-sdk": "2.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.12",
+    "drizzle-kit": "^0.31.7",
+    "drizzle-orm": "^0.45.4"
+  },
+  "overrides": {
+    "@esbuild-kit/core-utils": {
+      "esbuild": "^0.25.12"
+    }
+  }
+}

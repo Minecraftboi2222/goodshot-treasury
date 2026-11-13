@@ -1,0 +1,15 @@
+services:
+  - type: worker
+    name: goodshot-treasury
+    runtime: docker
+    plan: 0.5c-512mb
+    region: singapore
+    dockerfilePath: ./automation/Dockerfile
+    autoDeployTrigger: off
+    envVars:
+      - key: GOODSHOT_ORIGIN
+        value: https://playgoodshot.fun
+      - key: SOLANA_RPC_URL
+        sync: false
+      - key: TREASURY_SECRET_KEY
+        sync: false
